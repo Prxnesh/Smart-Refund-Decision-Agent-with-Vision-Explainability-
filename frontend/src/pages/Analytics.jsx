@@ -20,13 +20,46 @@ function StatCard({ label, value, sub }) {
 
 export default function Analytics() {
   const [data, setData] = useState(null)
+  const [error, setError] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { api.getAnalytics().then(setData) }, [])
+  useEffect(() => {
+    let alive = true
+    setLoading(true)
+    setError('')
 
-  if (!data) {
+    api
+      .getAnalytics()
+      .then((value) => {
+        if (alive) setData(value)
+      })
+      .catch((err) => {
+        if (alive) setError(err.message || 'Unable to load analytics.')
+      })
+      .finally(() => {
+        if (alive) setLoading(false)
+      })
+
+    return () => {
+      alive = false
+    }
+  }, [])
+
+  if (loading) {
     return (
       <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
         <LoadingSpinner text="Loading analytics…" />
+      </main>
+    )
+  }
+
+  if (error) {
+    return (
+      <main className="mx-auto max-w-7xl px-4 py-6 sm:px-6">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-700">
+          <p className="font-semibold">Analytics could not load.</p>
+          <p className="mt-1">{error}</p>
+        </div>
       </main>
     )
   }
@@ -35,7 +68,7 @@ export default function Analytics() {
     <main className="mx-auto max-w-7xl space-y-5 px-4 py-6 sm:px-6 animate-fade-in">
       <div>
         <h1 className="text-xl font-bold text-slate-900">Analytics Dashboard</h1>
-        <p className="mt-0.5 text-xs text-slate-400">Live metrics from Supabase</p>
+        <p className="mt-0.5 text-xs text-slate-400">Live metrics from the refund database</p>
       </div>
 
       {/* KPI cards */}

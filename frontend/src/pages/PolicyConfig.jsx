@@ -1,5 +1,6 @@
 import { CheckCircle, Save, Settings } from 'lucide-react'
 import { useEffect, useState } from 'react'
+import LoadingSpinner from '../components/LoadingSpinner'
 import { api } from '../services/api'
 
 const FIELDS = [
@@ -14,8 +15,30 @@ export default function PolicyConfig() {
   const [policy, setPolicy] = useState(null)
   const [status, setStatus] = useState(null) // null | 'ok' | 'error'
   const [msg, setMsg] = useState('')
+  const [loading, setLoading] = useState(true)
 
-  useEffect(() => { api.getPolicy().then(setPolicy) }, [])
+  useEffect(() => {
+    let alive = true
+    setLoading(true)
+    api
+      .getPolicy()
+      .then((value) => {
+        if (alive) setPolicy(value)
+      })
+      .catch((err) => {
+        if (alive) {
+          setStatus('error')
+          setMsg(err.message || 'Unable to load policy settings.')
+        }
+      })
+      .finally(() => {
+        if (alive) setLoading(false)
+      })
+
+    return () => {
+      alive = false
+    }
+  }, [])
 
   const save = async () => {
     setStatus(null)
@@ -30,7 +53,24 @@ export default function PolicyConfig() {
     }
   }
 
-  if (!policy) return null
+  if (loading) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 animate-fade-in">
+        <LoadingSpinner text="Loading policy settings…" />
+      </main>
+    )
+  }
+
+  if (!policy) {
+    return (
+      <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 animate-fade-in">
+        <div className="rounded-2xl border border-rose-200 bg-rose-50 p-5 text-sm text-rose-700">
+          <p className="font-semibold">Policy settings could not load.</p>
+          <p className="mt-1">{msg || 'Please log in again and retry.'}</p>
+        </div>
+      </main>
+    )
+  }
 
   return (
     <main className="mx-auto max-w-3xl px-4 py-6 sm:px-6 animate-fade-in">

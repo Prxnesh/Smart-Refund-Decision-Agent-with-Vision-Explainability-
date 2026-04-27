@@ -1,5 +1,13 @@
 import { API_BASE_URL } from '../utils/constants'
-import { getToken } from './auth'
+import { clearToken, getToken } from './auth'
+
+export class ApiError extends Error {
+  constructor(message, status) {
+    super(message)
+    this.name = 'ApiError'
+    this.status = status
+  }
+}
 
 async function request(path, options = {}) {
   const token = getToken()
@@ -10,7 +18,13 @@ async function request(path, options = {}) {
 
   if (!res.ok) {
     const error = await res.json().catch(() => ({ detail: 'Request failed' }))
-    throw new Error(error.detail || 'Request failed')
+    if (res.status === 401) {
+      clearToken()
+      if (typeof window !== 'undefined' && !window.location.pathname.startsWith('/login')) {
+        window.location.assign('/login?session=expired')
+      }
+    }
+    throw new ApiError(error.detail || 'Request failed', res.status)
   }
 
   if (res.headers.get('content-type')?.includes('application/json')) return res.json()
