@@ -100,7 +100,7 @@ export default function Inventory() {
                       {p.category}
                     </span>
                   </td>
-                  <td className="px-5 py-3.5 text-slate-700">${p.price.toFixed(2)}</td>
+                  <td className="px-5 py-3.5 text-slate-700">₹{p.price.toFixed(2)}</td>
                   <td className="px-5 py-3.5"><StockBadge stock={p.stock} /></td>
                   <td className="px-5 py-3.5 text-slate-600">{p.return_window_days}d</td>
                   <td className="px-5 py-3.5">

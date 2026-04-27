@@ -1,4 +1,4 @@
-import { ArrowLeft, Bot, DollarSign, Package, User } from 'lucide-react'
+import { ArrowLeft, Bot, IndianRupee, Package, User } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import ExplainerBox from '../components/ExplainerBox'
@@ -59,7 +59,7 @@ export default function CaseViewer() {
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm space-y-4">
           <InfoRow icon={User} label="User ID" value={data.user_id} />
           <InfoRow icon={Package} label="Product" value={data.product} />
-          <InfoRow icon={DollarSign} label="Price" value={`$${data.price.toFixed(2)}`} />
+          <InfoRow icon={IndianRupee} label="Price" value={`₹${data.price.toFixed(2)}`} />
         </div>
         <div className="rounded-2xl border border-slate-200 bg-white p-5 shadow-sm">
           <div className="mb-2 flex items-center gap-2">

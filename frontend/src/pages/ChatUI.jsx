@@ -1,4 +1,4 @@
-import { Calendar, DollarSign, Package, Send, ShoppingCart, Square, User } from 'lucide-react'
+import { Calendar, IndianRupee, Package, Send, ShoppingCart, Square, User } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import ChatMessage from '../components/ChatMessage'
 import LoadingSpinner from '../components/LoadingSpinner'
@@ -219,7 +219,7 @@ export default function ChatUI() {
             <option value="">— Choose a product (optional) —</option>
             {products.map((p) => (
               <option key={p.id} value={p.id}>
-                {p.name} · ${p.price} · {p.return_window_days}d window
+                {p.name} · ₹{p.price} · {p.return_window_days}d window
               </option>
             ))}
           </select>
@@ -237,7 +237,7 @@ export default function ChatUI() {
         </Field>
 
         <div className="grid grid-cols-2 gap-4">
-          <Field label="Price Paid ($)" icon={DollarSign}>
+          <Field label="Price Paid (₹)" icon={IndianRupee}>
             <input
               type="number"
               min="1"

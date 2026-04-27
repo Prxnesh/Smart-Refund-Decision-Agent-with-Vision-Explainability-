@@ -3,12 +3,14 @@ import logging
 from collections import Counter, defaultdict
 from datetime import datetime
 
+import httpx
 from fastapi import APIRouter, Depends, HTTPException, Query
 from fastapi.responses import StreamingResponse
 from sqlalchemy import desc, func
 from sqlalchemy.orm import Session
 
 from app.api.middleware import issue_token, require_admin
+from app.config import settings
 from app.database import get_db
 from app.exports.excel_export import build_report_excel
 from app.models import Complaint, Product, User
@@ -60,6 +62,40 @@ def _to_case_out(row: Complaint) -> CaseOut:
 def admin_login(payload: LoginRequest):
     token = issue_token(payload.username, payload.password)
     return LoginResponse(access_token=token)
+
+
+# ---------------------------------------------------------------------------
+# Agent / system status  (public)
+# ---------------------------------------------------------------------------
+
+@router.get("/status")
+def system_status(db: Session = Depends(get_db)):
+    """Returns live health of every sub-system the frontend renders."""
+    # DB stats
+    total_cases = db.query(func.count(Complaint.id)).scalar() or 0
+    approved = db.query(func.count(Complaint.id)).filter(Complaint.decision == "APPROVE").scalar() or 0
+    rejected = db.query(func.count(Complaint.id)).filter(Complaint.decision == "REJECT").scalar() or 0
+    partial = db.query(func.count(Complaint.id)).filter(Complaint.decision == "PARTIAL").scalar() or 0
+    fraud = db.query(func.count(Complaint.id)).filter(Complaint.fraud_score > 0.7).scalar() or 0
+    total_products = db.query(func.count(Product.id)).scalar() or 0
+    total_users = db.query(func.count(User.id)).scalar() or 0
+
+    # Ollama health
+    ollama_ok = False
+    ollama_model = settings.ollama_model
+    try:
+        r = httpx.get(f"{settings.ollama_base_url}/api/tags", timeout=3.0)
+        models = [m["name"] for m in r.json().get("models", [])]
+        ollama_ok = any(ollama_model in m for m in models)
+    except Exception:
+        pass
+
+    return {
+        "db": {"status": "ok", "total_cases": total_cases, "total_users": total_users, "total_products": total_products},
+        "decisions": {"approved": approved, "rejected": rejected, "partial": partial, "fraud_detected": fraud},
+        "ollama": {"status": "ok" if ollama_ok else "unavailable", "model": ollama_model},
+        "api": {"status": "ok", "version": "1.0.0"},
+    }
 
 
 # ---------------------------------------------------------------------------

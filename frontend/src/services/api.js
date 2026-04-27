@@ -28,4 +28,5 @@ export const api = {
   exportReport: () => request('/export-report'),
   getInventory: () => request('/inventory'),
   getProduct: (id) => request(`/inventory/${id}`),
+  getStatus: () => request('/status'),
 }
