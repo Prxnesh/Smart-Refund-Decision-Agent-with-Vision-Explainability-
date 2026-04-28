@@ -1,11 +1,12 @@
 import { BarChart2, FileText, LogIn, LogOut, MessageSquare, Package, Settings, Zap } from 'lucide-react'
 import { Link, NavLink, useNavigate } from 'react-router-dom'
 
-const ICON_MAP = { MessageSquare, FileText, Package, BarChart2, Settings }
+const ICON_MAP = { MessageSquare, FileText, Package, BarChart2, Settings, Zap }
 
 const NAV_LINKS = [
   { path: '/', label: 'Chat', icon: 'MessageSquare' },
   { path: '/admin', label: 'Cases', icon: 'FileText', end: true },
+  { path: '/admin/agents', label: 'Agents', icon: 'Zap' },
   { path: '/admin/inventory', label: 'Inventory', icon: 'Package' },
   { path: '/admin/analytics', label: 'Analytics', icon: 'BarChart2' },
   { path: '/admin/policy', label: 'Policy', icon: 'Settings' },
