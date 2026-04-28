@@ -4,6 +4,7 @@ import StatusBar from './components/StatusBar'
 import { useAuth } from './hooks/useAuth'
 import AdminDashboard from './pages/AdminDashboard'
 import Analytics from './pages/Analytics'
+import AgentsVisualization from './pages/AgentsVisualization'
 import CaseViewer from './pages/CaseViewer'
 import ChatUI from './pages/ChatUI'
 import Inventory from './pages/Inventory'
@@ -28,6 +29,7 @@ function App() {
           <Route path="/login" element={<Login onLogin={auth.login} loading={auth.loading} />} />
           <Route path="/admin" element={<Protected authed={auth.isAuthed}><AdminDashboard /></Protected>} />
           <Route path="/admin/case/:id" element={<Protected authed={auth.isAuthed}><CaseViewer /></Protected>} />
+          <Route path="/admin/agents" element={<Protected authed={auth.isAuthed}><AgentsVisualization /></Protected>} />
           <Route path="/admin/analytics" element={<Protected authed={auth.isAuthed}><Analytics /></Protected>} />
           <Route path="/admin/policy" element={<Protected authed={auth.isAuthed}><PolicyConfig /></Protected>} />
           <Route path="/admin/inventory" element={<Protected authed={auth.isAuthed}><Inventory /></Protected>} />

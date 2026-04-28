@@ -7,7 +7,8 @@ class Settings(BaseSettings):
 
     # Supabase Postgres connection string
     # Format: postgresql://postgres.<project-ref>:<password>@aws-0-<region>.pooler.supabase.com:6543/postgres
-    database_url: str
+    # Falls back to SQLite for local dev if not available
+    database_url: str = "sqlite:///./dev.db"
 
     frontend_url: str = "http://localhost:5173"
 

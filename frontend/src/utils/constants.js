@@ -1,4 +1,4 @@
-export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000/api'
+export const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:3000/api'
 
 export const DECISION_COLORS = {
   APPROVE: 'bg-emerald-50 text-emerald-700 border-emerald-200 ring-emerald-100',
@@ -9,6 +9,7 @@ export const DECISION_COLORS = {
 export const NAV_LINKS = [
   { path: '/', label: 'Chat', icon: 'MessageSquare' },
   { path: '/admin', label: 'Cases', icon: 'FileText' },
+  { path: '/admin/agents', label: 'Agents', icon: 'Zap' },
   { path: '/admin/inventory', label: 'Inventory', icon: 'Package' },
   { path: '/admin/analytics', label: 'Analytics', icon: 'BarChart2' },
   { path: '/admin/policy', label: 'Policy', icon: 'Settings' },
